@@ -10,16 +10,9 @@ public class ModEnchantments {
     public static final DeferredRegister<Enchantment> ENCHANTMENTS =
             DeferredRegister.create(ForgeRegistries.ENCHANTMENTS, BetterEnchantments.MOD_ID);
 
-//    public static final RegistryObject<Enchantment> ADVANCED_SHARPNESS =
-//            ENCHANTMENTS.register("advanced_sharpness",
-//                    () -> new AdvancedSharpnessEnchantment(
-//                            Enchantment.Rarity.RARE,
-//                            EquipmentSlot.MAINHAND
-//                    ));
-
     public static final RegistryObject<Enchantment> ADVANCED_PROTECTION =
             ENCHANTMENTS.register("advanced_protection",
-                    () -> new io.github.dqs147852.betterenchantments.enchantment.AdvancedProtectionEnchantment(
+                    () -> new AdvancedProtectionEnchantment(
                             Enchantment.Rarity.RARE,
                             EquipmentSlot.HEAD,
                             EquipmentSlot.CHEST,
@@ -27,9 +20,15 @@ public class ModEnchantments {
                             EquipmentSlot.FEET
                     ));
     public static final RegistryObject<Enchantment> ADVANCED_SHARPNESS =
-            ENCHANTMENTS.register("advance_sharpness",
+            ENCHANTMENTS.register("advanced_sharpness",
                     () -> new AdvancedSharpnessEnchantment_(
                             Enchantment.Rarity.RARE,
                             EquipmentSlot.MAINHAND
+                    ));
+    public static final RegistryObject<Enchantment> DOUBLE_JUMP =
+            ENCHANTMENTS.register("double_jump",
+                    () -> new DoubleJumpEnchantment(
+                            Enchantment.Rarity.RARE,
+                            EquipmentSlot.LEGS
                     ));
 }

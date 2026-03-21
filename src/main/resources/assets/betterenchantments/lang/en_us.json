@@ -1,7 +1,10 @@
 {
-  "enchantment.betteenchantments.advanced_sharpness": "Advanced Sharpness",
-  "enchantment.betteenchantments.advanced_sharpness.desc": "Greatly increases attack damage",
+  "enchantment.betterenchantments.advanced_sharpness": "Advanced Sharpness",
+  "enchantment.betterenchantments.advanced_sharpness.desc": "Greatly increases attack damage",
 
-  "enchantment.betteenchantments.advanced_protection": "Advanced Protection",
-  "enchantment.betteenchantments.advanced_protection.desc": "Provides enhanced damage reduction"
+  "enchantment.betterenchantments.advanced_protection": "Advanced Protection",
+  "enchantment.betterenchantments.advanced_protection.desc": "Provides enhanced damage reduction",
+
+  "enchantment.betterenchantments.double_jump": "Double Jump",
+  "enchantment.betterenchantments.double_jump.desc": "Allows jumping again in mid-air"
 }

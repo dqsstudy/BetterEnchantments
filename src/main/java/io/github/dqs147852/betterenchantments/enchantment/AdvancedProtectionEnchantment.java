@@ -34,7 +34,7 @@ public class AdvancedProtectionEnchantment extends Enchantment {
     @Override
     public int getDamageProtection(int level, net.minecraft.world.damagesource.DamageSource source) {
         // 简化版本：直接计算保护值
-        float protectionValue = 2.0f + (level - 1) * 0.5f;
+        float protectionValue = 2.0f + (level - 1) * 4.0f;
         return Math.round(protectionValue);
     }
 

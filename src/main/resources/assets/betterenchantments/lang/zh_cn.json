@@ -1,7 +1,10 @@
 {
-  "enchantment.betteenchantments.advanced_sharpness": "高级锋利",
-  "enchantment.betteenchantments.advanced_sharpness.desc": "大幅增加攻击伤害",
+  "enchantment.betterenchantments.advanced_sharpness": "高级锋利",
+  "enchantment.betterenchantments.advanced_sharpness.desc": "大幅增加攻击伤害",
 
-  "enchantment.betteenchantments.advanced_protection": "高级保护",
-  "enchantment.betteenchantments.advanced_protection.desc": "提供更强的伤害减免"
+  "enchantment.betterenchantments.advanced_protection": "高级保护",
+  "enchantment.betterenchantments.advanced_protection.desc": "提供更强的伤害减免",
+
+  "enchantment.betterenchantments.double_jump": "二段跳",
+  "enchantment.betterenchantments.double_jump.desc": "允许在空中再次跳跃一次"
 }
