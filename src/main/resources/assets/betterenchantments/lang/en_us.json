@@ -1,4 +1,7 @@
 {
   "enchantment.betteenchantments.advanced_sharpness": "Advanced Sharpness",
-  "enchantment.betteenchantments.advanced_sharpness.desc": "Greatly increases attack damage"
+  "enchantment.betteenchantments.advanced_sharpness.desc": "Greatly increases attack damage",
+
+  "enchantment.betteenchantments.advanced_protection": "Advanced Protection",
+  "enchantment.betteenchantments.advanced_protection.desc": "Provides enhanced damage reduction"
 }
