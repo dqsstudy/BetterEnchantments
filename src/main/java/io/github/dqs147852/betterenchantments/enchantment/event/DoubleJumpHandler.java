@@ -1,129 +1,177 @@
 package io.github.dqs147852.betterenchantments.event;
 
 import io.github.dqs147852.betterenchantments.enchantment.ModEnchantments;
+import io.github.dqs147852.betterenchantments.network.PacketDoubleJump;
+import io.github.dqs147852.betterenchantments.network.PacketHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber(modid = "betteenchantments", value = Dist.CLIENT)
+@Mod.EventBusSubscriber(modid = "betterenchantments", value = Dist.CLIENT)
 public class DoubleJumpHandler {
-    private static final int DOUBLE_JUMP_COOLDOWN = 5; // 冷却时间（tick）
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    // 存储每个玩家的状态
-    private static final Map<UUID, PlayerJumpState> playerStates = new HashMap<>();
+    // 客户端状态存储
+    private static final Map<UUID, ClientJumpState> clientStates = new HashMap<>();
 
-    private static class PlayerJumpState {
+    private static class ClientJumpState {
         boolean wasOnGround = true;
         boolean hasDoubleJumped = false;
-        int cooldown = 0;
-        boolean wasJumping = false;
+        boolean jumpKeyPressed = false;
+        int groundTicks = 0;
     }
 
+    // 客户端Tick事件 - 用于状态更新
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
 
-        // 获取客户端玩家
-        net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
+        Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
 
         if (player == null) return;
 
         UUID playerId = player.getUUID();
-
-        // 获取或创建玩家状态
-        PlayerJumpState state = playerStates.computeIfAbsent(playerId, k -> new PlayerJumpState());
+        ClientJumpState state = clientStates.computeIfAbsent(playerId, k -> new ClientJumpState());
 
         // 检查玩家是否穿着带有二段跳附魔的护腿
         ItemStack leggings = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS);
-        boolean hasDoubleJumpEnchantment = EnchantmentHelper.getItemEnchantmentLevel(
-                ModEnchantments.DOUBLE_JUMP.get(), leggings) > 0;
+        int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                ModEnchantments.DOUBLE_JUMP.get(), leggings);
+        boolean hasDoubleJumpEnchantment = enchantmentLevel > 0;
 
         if (!hasDoubleJumpEnchantment) {
+            // 没有附魔时重置状态
             state.wasOnGround = player.onGround();
             state.hasDoubleJumped = false;
+            state.groundTicks = 0;
             return;
         }
 
-        // 冷却时间处理
-        if (state.cooldown > 0) {
-            state.cooldown--;
-        }
-
         // 检测玩家是否刚刚离开地面
-        if (state.wasOnGround && !player.onGround()) {
-            state.hasDoubleJumped = false;
-        }
+        boolean isOnGround = player.onGround();
 
-        // 检测跳跃输入 - 在客户端使用minecraft.options.keyJump
-        boolean isJumping = minecraft.options.keyJump.isDown();
-
-        // 如果玩家在空中且没有在地面上，并且按下了跳跃键
-        if (!player.onGround() &&
-                !player.isInWater() &&
-                !player.isInLava() &&
-                player.getDeltaMovement().y < 0.1 && // 正在下落
-                state.cooldown == 0 &&
-                isJumping &&
-                !state.wasJumping && // 检测跳跃键刚按下
-                !state.hasDoubleJumped) {
-
-            // 执行二段跳
-            double jumpPower = 0.42; // 与普通跳跃相同的力量
-
-            // 增加跳跃高度
-            if (player.hasEffect(net.minecraft.world.effect.MobEffects.JUMP)) {
-                jumpPower += (double)(player.getEffect(net.minecraft.world.effect.MobEffects.JUMP).getAmplifier() + 1) * 0.1F;
+        // 重置二段跳的条件：在地面停留足够时间
+        if (isOnGround) {
+            state.groundTicks++;
+            if (state.groundTicks > 2) { // 在地面停留3个tick后重置
+                if (state.hasDoubleJumped) {
+                    LOGGER.debug("玩家 {} 已落地，重置二段跳状态", player.getName().getString());
+                }
+                state.hasDoubleJumped = false;
             }
-
-            // 应用二段跳
-            player.setDeltaMovement(player.getDeltaMovement().x, jumpPower, player.getDeltaMovement().z);
-
-            // 播放跳跃音效
-            player.playSound(net.minecraft.sounds.SoundEvents.HORSE_JUMP, 0.5F, 1.0F);
-
-            // 设置状态
-            state.hasDoubleJumped = true;
-            state.cooldown = DOUBLE_JUMP_COOLDOWN;
-
-            // 发送跳跃粒子效果
-            spawnJumpParticles(player);
+        } else {
+            state.groundTicks = 0;
         }
 
-        // 更新状态
-        state.wasOnGround = player.onGround();
-        state.wasJumping = isJumping;
-    }
+        // 更新地面状态
+        state.wasOnGround = isOnGround;
 
-    private static void spawnJumpParticles(Player player) {
-        // 生成跳跃粒子效果
-        for (int i = 0; i < 8; i++) {
-            double offsetX = (player.getRandom().nextDouble() - 0.5) * 0.5;
-            double offsetZ = (player.getRandom().nextDouble() - 0.5) * 0.5;
-
-            player.level().addParticle(
-                    net.minecraft.core.particles.ParticleTypes.CLOUD,
-                    player.getX() + offsetX,
-                    player.getY(),
-                    player.getZ() + offsetZ,
-                    0.0, 0.1, 0.0
-            );
+        // 输出调试信息
+        if (player.tickCount % 20 == 0) { // 每秒输出一次
+            LOGGER.debug("二段跳状态: 附魔={}, 地面={}, 已使用={}, 地面ticks={}, 垂直速度={}",
+                    enchantmentLevel, isOnGround, state.hasDoubleJumped, state.groundTicks, player.getDeltaMovement().y);
         }
     }
 
-    // 清理不再需要的玩家状态
+    // 按键输入事件 - 更可靠的按键检测
+    @SubscribeEvent
+    public static void onKeyInput(InputEvent.Key event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Player player = minecraft.player;
+
+        if (player == null) return;
+
+        // 检查是否是空格键被按下
+        if (minecraft.options.keyJump.matches(event.getKey(), event.getScanCode())) {
+            UUID playerId = player.getUUID();
+            ClientJumpState state = clientStates.get(playerId);
+
+            if (state == null) return;
+
+            // 检查玩家是否穿着带有二段跳附魔的护腿
+            ItemStack leggings = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS);
+            int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                    ModEnchantments.DOUBLE_JUMP.get(), leggings);
+            boolean hasDoubleJumpEnchantment = enchantmentLevel > 0;
+
+            if (!hasDoubleJumpEnchantment) return;
+
+            // 检查是否在空中且可以二段跳
+            boolean isInAir = !player.onGround() && !player.isInWater() && !player.isInLava();
+            boolean isFalling = player.getDeltaMovement().y < 0;
+            boolean canDoubleJump = isInAir && isFalling && !state.hasDoubleJumped;
+
+            if (canDoubleJump && event.getAction() == 1) { // 按键按下
+                LOGGER.info("检测到二段跳按键，发送网络包");
+
+                // 发送网络包到服务端
+                PacketHandler.sendToServer(new PacketDoubleJump());
+
+                // 客户端本地标记
+                state.hasDoubleJumped = true;
+
+                // 立即在客户端执行二段跳，不等待服务器响应
+                executeDoubleJumpLocal(player);
+            }
+        }
+    }
+
+    // 本地执行二段跳（立即反馈）
+    private static void executeDoubleJumpLocal(Player player) {
+        if (player == null) return;
+
+        double jumpPower = 0.42; // 基础跳跃力量
+
+        // 跳跃效果增强
+        if (player.hasEffect(net.minecraft.world.effect.MobEffects.JUMP)) {
+            int amplifier = player.getEffect(net.minecraft.world.effect.MobEffects.JUMP).getAmplifier();
+            jumpPower += (amplifier + 1) * 0.1;
+        }
+
+        // 保持水平速度，应用垂直速度
+        double motionX = player.getDeltaMovement().x;
+        double motionZ = player.getDeltaMovement().z;
+
+        player.setDeltaMovement(motionX, jumpPower, motionZ);
+
+        // 播放跳跃音效
+        player.playSound(net.minecraft.sounds.SoundEvents.HORSE_JUMP, 0.5F, 1.0F);
+
+        // 生成粒子效果
+        if (player.level().isClientSide()) {
+            for (int i = 0; i < 10; i++) {
+                double offsetX = (player.getRandom().nextDouble() - 0.5) * 0.8;
+                double offsetZ = (player.getRandom().nextDouble() - 0.5) * 0.8;
+
+                player.level().addParticle(
+                        net.minecraft.core.particles.ParticleTypes.CLOUD,
+                        player.getX() + offsetX,
+                        player.getY(),
+                        player.getZ() + offsetZ,
+                        0.0, 0.2, 0.0
+                );
+            }
+        }
+    }
+
+    // 玩家退出时清理状态
     @SubscribeEvent
     public static void onClientDisconnect(net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggingOut event) {
         if (event.getPlayer() != null) {
-            playerStates.remove(event.getPlayer().getUUID());
+            clientStates.remove(event.getPlayer().getUUID());
         }
     }
 }
