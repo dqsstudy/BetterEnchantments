@@ -28,8 +28,8 @@ public class DoubleJumpHandler {
 
     private static class ClientJumpState {
         boolean wasOnGround = true;
-        boolean hasDoubleJumped = false;
-        boolean jumpKeyPressed = false;
+        int jumpsUsed = 0;  // 已使用的二段跳次数
+        int maxJumps = 1;   // 最大二段跳次数（根据附魔等级）
         int groundTicks = 0;
     }
 
@@ -55,10 +55,16 @@ public class DoubleJumpHandler {
         if (!hasDoubleJumpEnchantment) {
             // 没有附魔时重置状态
             state.wasOnGround = player.onGround();
-            state.hasDoubleJumped = false;
+            state.jumpsUsed = 0;
+            state.maxJumps = 1;
             state.groundTicks = 0;
             return;
         }
+
+        // 根据附魔等级设置最大跳跃次数
+        // 等级1: 1次额外跳跃（总共2次）
+        // 等级2: 2次额外跳跃（总共3次）
+        state.maxJumps = enchantmentLevel;
 
         // 检测玩家是否刚刚离开地面
         boolean isOnGround = player.onGround();
@@ -67,10 +73,11 @@ public class DoubleJumpHandler {
         if (isOnGround) {
             state.groundTicks++;
             if (state.groundTicks > 2) { // 在地面停留3个tick后重置
-                if (state.hasDoubleJumped) {
-                    LOGGER.debug("玩家 {} 已落地，重置二段跳状态", player.getName().getString());
+                if (state.jumpsUsed > 0) {
+                    LOGGER.debug("玩家 {} 已落地，重置二段跳状态，已使用次数: {}",
+                            player.getName().getString(), state.jumpsUsed);
                 }
-                state.hasDoubleJumped = false;
+                state.jumpsUsed = 0;
             }
         } else {
             state.groundTicks = 0;
@@ -81,8 +88,9 @@ public class DoubleJumpHandler {
 
         // 输出调试信息
         if (player.tickCount % 20 == 0) { // 每秒输出一次
-            LOGGER.debug("二段跳状态: 附魔={}, 地面={}, 已使用={}, 地面ticks={}, 垂直速度={}",
-                    enchantmentLevel, isOnGround, state.hasDoubleJumped, state.groundTicks, player.getDeltaMovement().y);
+            LOGGER.debug("二段跳状态: 等级={}, 地面={}, 已用/最大={}/{}, 地面ticks={}, 垂直速度={}",
+                    enchantmentLevel, isOnGround, state.jumpsUsed, state.maxJumps,
+                    state.groundTicks, player.getDeltaMovement().y);
         }
     }
 
@@ -112,25 +120,25 @@ public class DoubleJumpHandler {
             // 检查是否在空中且可以二段跳
             boolean isInAir = !player.onGround() && !player.isInWater() && !player.isInLava();
             boolean isFalling = player.getDeltaMovement().y < 0;
-            boolean canDoubleJump = isInAir && isFalling && !state.hasDoubleJumped;
+            boolean canDoubleJump = isInAir && isFalling && state.jumpsUsed < state.maxJumps;
 
             if (canDoubleJump && event.getAction() == 1) { // 按键按下
-                LOGGER.info("检测到二段跳按键，发送网络包");
+                LOGGER.info("检测到第{}次二段跳按键，发送网络包", state.jumpsUsed + 1);
 
                 // 发送网络包到服务端
-                PacketHandler.sendToServer(new PacketDoubleJump());
+                PacketHandler.sendToServer(new PacketDoubleJump(state.jumpsUsed + 1));
 
-                // 客户端本地标记
-                state.hasDoubleJumped = true;
+                // 客户端本地记录
+                state.jumpsUsed++;
 
                 // 立即在客户端执行二段跳，不等待服务器响应
-                executeDoubleJumpLocal(player);
+                executeDoubleJumpLocal(player, state.jumpsUsed);
             }
         }
     }
 
     // 本地执行二段跳（立即反馈）
-    private static void executeDoubleJumpLocal(Player player) {
+    private static void executeDoubleJumpLocal(Player player, int jumpCount) {
         if (player == null) return;
 
         double jumpPower = 0.42; // 基础跳跃力量
@@ -139,6 +147,11 @@ public class DoubleJumpHandler {
         if (player.hasEffect(net.minecraft.world.effect.MobEffects.JUMP)) {
             int amplifier = player.getEffect(net.minecraft.world.effect.MobEffects.JUMP).getAmplifier();
             jumpPower += (amplifier + 1) * 0.1;
+        }
+
+        // 第二次跳跃稍微减弱
+        if (jumpCount > 1) {
+            jumpPower *= 0.9; // 第二次跳跃力量减少10%
         }
 
         // 保持水平速度，应用垂直速度
@@ -152,7 +165,8 @@ public class DoubleJumpHandler {
 
         // 生成粒子效果
         if (player.level().isClientSide()) {
-            for (int i = 0; i < 10; i++) {
+            int particleCount = 8 + (jumpCount - 1) * 4; // 跳跃次数越多粒子越多
+            for (int i = 0; i < particleCount; i++) {
                 double offsetX = (player.getRandom().nextDouble() - 0.5) * 0.8;
                 double offsetZ = (player.getRandom().nextDouble() - 0.5) * 0.8;
 

@@ -3,23 +3,31 @@ package io.github.dqs147852.betterenchantments.network;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class PacketSpawnJumpParticles {
-    private final UUID playerId;
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public PacketSpawnJumpParticles(UUID playerId) {
+    private final UUID playerId;
+    private final int jumpCount;  // 第几次跳跃
+
+    public PacketSpawnJumpParticles(UUID playerId, int jumpCount) {
         this.playerId = playerId;
+        this.jumpCount = jumpCount;
     }
 
     public PacketSpawnJumpParticles(FriendlyByteBuf buf) {
         this.playerId = buf.readUUID();
+        this.jumpCount = buf.readInt();
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeUUID(playerId);
+        buf.writeInt(jumpCount);
     }
 
     public static void handle(PacketSpawnJumpParticles msg, Supplier<NetworkEvent.Context> ctx) {
@@ -33,17 +41,21 @@ public class PacketSpawnJumpParticles {
                 net.minecraft.world.entity.player.Player player = minecraft.level.getPlayerByUUID(msg.playerId);
                 if (player == null) return;
 
-                // 生成粒子效果
-                for (int i = 0; i < 8; i++) {
-                    double offsetX = (player.getRandom().nextDouble() - 0.5) * 0.5;
-                    double offsetZ = (player.getRandom().nextDouble() - 0.5) * 0.5;
+                LOGGER.debug("生成玩家 {} 第{}次跳跃的粒子效果",
+                        player.getName().getString(), msg.jumpCount);
+
+                // 生成粒子效果，跳跃次数越多粒子越多
+                int particleCount = 8 + (msg.jumpCount - 1) * 4;
+                for (int i = 0; i < particleCount; i++) {
+                    double offsetX = (player.getRandom().nextDouble() - 0.5) * 0.8;
+                    double offsetZ = (player.getRandom().nextDouble() - 0.5) * 0.8;
 
                     player.level().addParticle(
                             net.minecraft.core.particles.ParticleTypes.CLOUD,
                             player.getX() + offsetX,
                             player.getY(),
                             player.getZ() + offsetZ,
-                            0.0, 0.1, 0.0
+                            0.0, 0.2, 0.0
                     );
                 }
             }

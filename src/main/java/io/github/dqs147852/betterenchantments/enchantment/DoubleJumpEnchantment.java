@@ -17,52 +17,38 @@ public class DoubleJumpEnchantment extends Enchantment {
 
     @Override
     public int getMaxLevel() {
-        return 1; // 只有一个等级
+        return 2;  // 最高2级
     }
 
     @Override
     public int getMinCost(int level) {
-        return 15; // 附魔成本
+        // 等级1: 15级
+        // 等级2: 25级
+        return 10 + (level - 1) * 10;
     }
 
     @Override
     public int getMaxCost(int level) {
-        return 30;
+        return this.getMinCost(level) + 10;
     }
 
     @Override
     public boolean isTreasureOnly() {
-        return false; // 可以在附魔台中获得
-    }
-
-    @Override
-    public boolean isTradeable() {
-        return true; // 可以交易
-    }
-
-    @Override
-    public boolean isDiscoverable() {
-        return true; // 可以在附魔台中发现
-    }
-
-    @Override
-    public boolean isAllowedOnBooks() {
-        return true; // 可以出现在附魔书上
-    }
-
-    @Override
-    public boolean canEnchant(net.minecraft.world.item.ItemStack stack) {
-        // 只能在护腿上附魔
-        if (stack.getItem() instanceof net.minecraft.world.item.ArmorItem) {
-            net.minecraft.world.item.ArmorItem armor = (net.minecraft.world.item.ArmorItem) stack.getItem();
-            return armor.getEquipmentSlot() == EquipmentSlot.LEGS;
-        }
         return false;
     }
 
     @Override
-    public boolean checkCompatibility(Enchantment other) {
-        // 不与其他附魔冲突
-        return super.checkCompatibility(other);
+    public boolean isTradeable() {
+        return true;
+    }
+
+    @Override
+    public boolean isDiscoverable() {
+        return true;
+    }
+
+    @Override
+    public boolean isAllowedOnBooks() {
+        return true;
     }
 }
