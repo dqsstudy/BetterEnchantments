@@ -38,7 +38,7 @@ public class PacketDoubleJump {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
             if (player == null) {
-                LOGGER.warn("收到二段跳网络包，但发送者为空");
+                //LOGGER.warn("收到二段跳网络包，但发送者为空");
                 return;
             }
 
@@ -51,13 +51,13 @@ public class PacketDoubleJump {
                     ModEnchantments.DOUBLE_JUMP.get(), leggings);
 
             if (enchantmentLevel <= 0) {
-                LOGGER.warn("玩家 {} 没有穿戴二段跳护腿", player.getName().getString());
+                //LOGGER.warn("玩家 {} 没有穿戴二段跳护腿", player.getName().getString());
                 return;
             }
 
             // 检查玩家是否在空中
             if (player.onGround() || player.isInWater() || player.isInLava()) {
-                LOGGER.debug("玩家 {} 不满足二段跳条件（在地面/水中/熔岩中）", player.getName().getString());
+                //LOGGER.debug("玩家 {} 不满足二段跳条件（在地面/水中/熔岩中）", player.getName().getString());
                 return;
             }
 
@@ -69,19 +69,17 @@ public class PacketDoubleJump {
 
             // 检查是否超过最大跳跃次数
             if (jumpCount > maxJumps) {
-                LOGGER.warn("玩家 {} 尝试第{}次跳跃，但最大允许{}次",
-                        player.getName().getString(), jumpCount, maxJumps);
+                //LOGGER.warn("玩家 {} 尝试第{}次跳跃，但最大允许{}次",player.getName().getString(), jumpCount, maxJumps);
                 return;
             }
 
             // 检查跳跃计数是否连续
             if (jumpCount != usedJumps + 1) {
-                LOGGER.warn("玩家 {} 跳跃计数不连续，期望{}但收到{}",
-                        player.getName().getString(), usedJumps + 1, jumpCount);
+                //LOGGER.warn("玩家 {} 跳跃计数不连续，期望{}但收到{}", player.getName().getString(), usedJumps + 1, jumpCount);
                 return;
             }
 
-            LOGGER.info("服务器确认玩家 {} 的第{}次二段跳", player.getName().getString(), jumpCount);
+            //LOGGER.info("服务器确认玩家 {} 的第{}次二段跳", player.getName().getString(), jumpCount);
 
             // 执行二段跳
             double jumpPower = 0.42;
@@ -121,12 +119,12 @@ public class PacketDoubleJump {
         if (player == null) return;
 
         serverJumpCounts.remove(player.getUUID());
-        LOGGER.debug("重置玩家 {} 的二段跳状态", player.getName().getString());
+        //LOGGER.debug("重置玩家 {} 的二段跳状态", player.getName().getString());
     }
 
     // 清理玩家状态
     public static void removePlayerState(UUID playerId) {
         serverJumpCounts.remove(playerId);
-        LOGGER.debug("清理玩家 {} 的二段跳状态", playerId);
+        //LOGGER.debug("清理玩家 {} 的二段跳状态", playerId);
     }
 }

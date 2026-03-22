@@ -38,8 +38,7 @@ public class PlayerTickHandler {
         Boolean wasOnGround = serverGroundStates.get(playerId);
         boolean isOnGround = player.onGround();
 
-        LOGGER.debug("玩家 {} 地面状态: 之前={}, 现在={}",
-                player.getName().getString(), wasOnGround, isOnGround);
+        //LOGGER.debug("玩家 {} 地面状态: 之前={}, 现在={}", player.getName().getString(), wasOnGround, isOnGround);
 
         // 如果玩家落地，重置二段跳状态
         if (wasOnGround != null && !wasOnGround && isOnGround) {
@@ -49,7 +48,7 @@ public class PlayerTickHandler {
                     ModEnchantments.DOUBLE_JUMP.get(), leggings) > 0;
 
             if (hasDoubleJumpEnchantment) {
-                LOGGER.info("玩家 {} 落地，重置二段跳状态", player.getName().getString());
+                //LOGGER.info("玩家 {} 落地，重置二段跳状态", player.getName().getString());
                 PacketDoubleJump.resetJumpState(player);
             }
         }
@@ -64,7 +63,7 @@ public class PlayerTickHandler {
         if (event.getEntity() instanceof ServerPlayer) {
             serverGroundStates.remove(event.getEntity().getUUID());
             PacketDoubleJump.removePlayerState(event.getEntity().getUUID());
-            LOGGER.debug("玩家 {} 退出，清理地面状态", event.getEntity().getName().getString());
+            //LOGGER.debug("玩家 {} 退出，清理地面状态", event.getEntity().getName().getString());
         }
     }
 }

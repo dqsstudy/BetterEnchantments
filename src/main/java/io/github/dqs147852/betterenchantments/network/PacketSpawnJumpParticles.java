@@ -41,8 +41,7 @@ public class PacketSpawnJumpParticles {
                 net.minecraft.world.entity.player.Player player = minecraft.level.getPlayerByUUID(msg.playerId);
                 if (player == null) return;
 
-                LOGGER.debug("生成玩家 {} 第{}次跳跃的粒子效果",
-                        player.getName().getString(), msg.jumpCount);
+                //LOGGER.debug("生成玩家 {} 第{}次跳跃的粒子效果", player.getName().getString(), msg.jumpCount);
 
                 // 生成粒子效果，跳跃次数越多粒子越多
                 int particleCount = 8 + (msg.jumpCount - 1) * 4;

@@ -74,8 +74,7 @@ public class DoubleJumpHandler {
             state.groundTicks++;
             if (state.groundTicks > 2) { // 在地面停留3个tick后重置
                 if (state.jumpsUsed > 0) {
-                    LOGGER.debug("玩家 {} 已落地，重置二段跳状态，已使用次数: {}",
-                            player.getName().getString(), state.jumpsUsed);
+                    //LOGGER.debug("玩家 {} 已落地，重置二段跳状态，已使用次数: {}",player.getName().getString(), state.jumpsUsed);
                 }
                 state.jumpsUsed = 0;
             }
@@ -88,9 +87,7 @@ public class DoubleJumpHandler {
 
         // 输出调试信息
         if (player.tickCount % 20 == 0) { // 每秒输出一次
-            LOGGER.debug("二段跳状态: 等级={}, 地面={}, 已用/最大={}/{}, 地面ticks={}, 垂直速度={}",
-                    enchantmentLevel, isOnGround, state.jumpsUsed, state.maxJumps,
-                    state.groundTicks, player.getDeltaMovement().y);
+            //LOGGER.debug("二段跳状态: 等级={}, 地面={}, 已用/最大={}/{}, 地面ticks={}, 垂直速度={}", enchantmentLevel, isOnGround, state.jumpsUsed, state.maxJumps, state.groundTicks, player.getDeltaMovement().y);
         }
     }
 
@@ -123,7 +120,7 @@ public class DoubleJumpHandler {
             boolean canDoubleJump = isInAir && isFalling && state.jumpsUsed < state.maxJumps;
 
             if (canDoubleJump && event.getAction() == 1) { // 按键按下
-                LOGGER.info("检测到第{}次二段跳按键，发送网络包", state.jumpsUsed + 1);
+                //LOGGER.info("检测到第{}次二段跳按键，发送网络包", state.jumpsUsed + 1);
 
                 // 发送网络包到服务端
                 PacketHandler.sendToServer(new PacketDoubleJump(state.jumpsUsed + 1));

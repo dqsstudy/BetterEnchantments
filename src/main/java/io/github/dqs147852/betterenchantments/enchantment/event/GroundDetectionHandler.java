@@ -44,7 +44,7 @@ public class GroundDetectionHandler {
     public static void onPlayerLogout(net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer) {
             PacketDoubleJump.removePlayerState(event.getEntity().getUUID());
-            LOGGER.debug("玩家 {} 退出，清理二段跳状态", event.getEntity().getName().getString());
+            //LOGGER.debug("玩家 {} 退出，清理二段跳状态", event.getEntity().getName().getString());
         }
     }
 
@@ -53,7 +53,7 @@ public class GroundDetectionHandler {
     public static void onPlayerRespawn(net.minecraftforge.event.entity.player.PlayerEvent.PlayerRespawnEvent event) {
         if (event.getEntity() instanceof ServerPlayer) {
             PacketDoubleJump.resetJumpState((ServerPlayer) event.getEntity());
-            LOGGER.debug("玩家 {} 重生，重置二段跳状态", event.getEntity().getName().getString());
+           //LOGGER.debug("玩家 {} 重生，重置二段跳状态", event.getEntity().getName().getString());
         }
     }
 }
