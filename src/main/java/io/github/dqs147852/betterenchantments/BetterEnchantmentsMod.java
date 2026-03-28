@@ -18,6 +18,7 @@ public class BetterEnchantmentsMod {
     public static final Logger LOGGER = LogManager.getLogger();
 
 
+
     public BetterEnchantmentsMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
