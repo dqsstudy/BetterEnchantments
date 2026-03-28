@@ -11,6 +11,9 @@
   "enchantment.betterenchantments.vampirism": "吸血鬼",
   "enchantment.betterenchantments.vampirism.desc": "攻击时回复造成的部分伤害为生命值",
 
+  "enchantment.betterenchantments.combo": "连击",
+  "enchantment.betterenchantments.combo.desc": "造成多次连续击退效果",
+
   "message.betterenchantments.anvil_reset_success": "§a已重置物品的附魔惩罚！",
   "message.betterenchantments.anvil_reset_info": "§7将装备、钻石块和20个经验瓶丢在铁砧上可重置附魔惩罚"
 }

@@ -11,6 +11,9 @@
   "enchantment.betterenchantments.vampirism": "Vampirism",
   "enchantment.betterenchantments.vampirism.desc": "Heals a percentage of damage dealt as health",
 
+  "enchantment.betterenchantments.combo": "Combo",
+  "enchantment.betterenchantments.combo.desc": "Causes multiple consecutive knockback effects",
+
   "message.betterenchantments.anvil_reset_success": "§aEnchantment penalty has been reset!",
   "message.betterenchantments.anvil_reset_info": "§7Drop equipment, diamond block and 20 experience bottles on an anvil to reset enchantment penalty"
 }

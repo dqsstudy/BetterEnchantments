@@ -1,9 +1,10 @@
 package io.github.dqs147852.betterenchantments;
 
-import io.github.dqs147852.betterenchantments.enchantment.AdvancedProtectionEnchantment;
 import io.github.dqs147852.betterenchantments.enchantment.AdvancedSharpnessEnchantment_;
+import io.github.dqs147852.betterenchantments.enchantment.AdvancedProtectionEnchantment;
 import io.github.dqs147852.betterenchantments.enchantment.DoubleJumpEnchantment;
 import io.github.dqs147852.betterenchantments.enchantment.VampirismEnchantment;
+import io.github.dqs147852.betterenchantments.enchantment.ComboEnchantment;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.DeferredRegister;
@@ -41,6 +42,13 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> VAMPIRISM =
             ENCHANTMENTS.register("vampirism",
                     () -> new VampirismEnchantment(
+                            Enchantment.Rarity.UNCOMMON,
+                            EquipmentSlot.MAINHAND
+                    ));
+
+    public static final RegistryObject<Enchantment> COMBO =
+            ENCHANTMENTS.register("combo",
+                    () -> new ComboEnchantment(
                             Enchantment.Rarity.UNCOMMON,
                             EquipmentSlot.MAINHAND
                     ));
