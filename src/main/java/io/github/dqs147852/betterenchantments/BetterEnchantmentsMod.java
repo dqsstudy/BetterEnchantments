@@ -17,8 +17,6 @@ public class BetterEnchantmentsMod {
     public static final String MOD_ID = "betterenchantments";
     public static final Logger LOGGER = LogManager.getLogger();
 
-
-
     public BetterEnchantmentsMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
