@@ -1,6 +1,6 @@
 package io.github.dqs147852.betterenchantments.network;
 
-import io.github.dqs147852.betterenchantments.enchantment.ModEnchantments;
+import io.github.dqs147852.betterenchantments.ModEnchantments;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;

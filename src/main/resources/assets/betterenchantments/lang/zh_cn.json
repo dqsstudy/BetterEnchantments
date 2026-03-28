@@ -6,5 +6,11 @@
   "enchantment.betterenchantments.advanced_protection.desc": "提供更强的伤害减免",
 
   "enchantment.betterenchantments.double_jump": "二段跳",
-  "enchantment.betterenchantments.double_jump.desc": "允许在空中再次跳跃一次"
+  "enchantment.betterenchantments.double_jump.desc": "允许在空中再次跳跃一次",
+
+  "enchantment.betterenchantments.vampirism": "吸血鬼",
+  "enchantment.betterenchantments.vampirism.desc": "攻击时回复造成的部分伤害为生命值",
+
+  "message.betterenchantments.anvil_reset_success": "§a已重置物品的附魔惩罚！",
+  "message.betterenchantments.anvil_reset_info": "§7将装备、钻石块和20个经验瓶丢在铁砧上可重置附魔惩罚"
 }

@@ -6,5 +6,11 @@
   "enchantment.betterenchantments.advanced_protection.desc": "Provides enhanced damage reduction",
 
   "enchantment.betterenchantments.double_jump": "Double Jump",
-  "enchantment.betterenchantments.double_jump.desc": "Allows jumping again in mid-air"
+  "enchantment.betterenchantments.double_jump.desc": "Allows jumping again in mid-air",
+
+  "enchantment.betterenchantments.vampirism": "Vampirism",
+  "enchantment.betterenchantments.vampirism.desc": "Heals a percentage of damage dealt as health",
+
+  "message.betterenchantments.anvil_reset_success": "§aEnchantment penalty has been reset!",
+  "message.betterenchantments.anvil_reset_info": "§7Drop equipment, diamond block and 20 experience bottles on an anvil to reset enchantment penalty"
 }

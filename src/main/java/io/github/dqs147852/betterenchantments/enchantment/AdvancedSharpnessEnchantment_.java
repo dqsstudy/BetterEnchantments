@@ -36,19 +36,13 @@ public class AdvancedSharpnessEnchantment_ extends Enchantment {
         if (level == 1) {
             return 3.0F;
         } else if (level == 2) {
-            return (3.0F * 3.0F) / 2.0F;
+            return 3.0F + 5.0F;
         } else if (level == 3) {
-            float level2 = (3.0F * 3.0F) / 2.0F;
-            return (level2 * level2) / 2.0F;
+            return 3.0F + 5.0F*2;
         } else if (level == 4) {
-            float level2 = (3.0F * 3.0F) / 2.0F;
-            float level3 = (level2 * level2) / 2.0F;
-            return (level3 * level3) / 2.0F;
+            return 3.0F + 5.0F*3;
         } else {
-            float level2 = (3.0F * 3.0F) / 2.0F;
-            float level3 = (level2 * level2) / 2.0F;
-            float level4 = (level3 * level3) / 2.0F;
-            return (level4 * level4) / 2.0F;
+            return 3.0F + 5.0F*4;
         }
     }
 

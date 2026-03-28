@@ -1,6 +1,6 @@
 package io.github.dqs147852.betterenchantments.event;
 
-import io.github.dqs147852.betterenchantments.enchantment.ModEnchantments;
+import io.github.dqs147852.betterenchantments.ModEnchantments;
 import io.github.dqs147852.betterenchantments.network.PacketDoubleJump;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;

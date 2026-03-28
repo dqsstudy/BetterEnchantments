@@ -1,6 +1,6 @@
 package io.github.dqs147852.betterenchantments.network;
 
-import io.github.dqs147852.betterenchantments.BetterEnchantments;
+import io.github.dqs147852.betterenchantments.BetterEnchantmentsMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkDirection;
@@ -15,7 +15,7 @@ public class PacketHandler {
     private static int packetId = 0;
 
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(BetterEnchantments.MOD_ID, "main"),
+            new ResourceLocation(BetterEnchantmentsMod.MOD_ID, "main"),
             () -> PROTOCOL_VERSION,
             PROTOCOL_VERSION::equals,
             PROTOCOL_VERSION::equals

@@ -1,0 +1,17 @@
+# Better Enchantments Mod - 铁砧重置配置
+
+[anvil_reset]
+# 是否启用铁砧附魔惩罚重置功能
+enabled = true
+
+# 重置所需的钻石块数量
+diamondBlocksRequired = 1
+
+# 重置所需的经验瓶数量
+experienceBottlesRequired = 20
+
+# 铁砧周围的检测范围（格数）
+detectionRange = 1.0
+
+# 是否消耗材料（钻石块和经验瓶）
+consumeMaterials = true
